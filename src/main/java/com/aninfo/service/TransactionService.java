@@ -28,7 +28,7 @@ public class TransactionService {
 
     @Transactional
     public Transaction createTransaction(final Transaction transaction) {
-        final TransactionType transactionType = transaction.getTransactionType();
+        final TransactionType transactionType = transaction.getType();
 
         if (TransactionType.DEPOSIT.equals(transactionType)) {
             final double amountToDeposit = applyPromo(transaction.getAmount());

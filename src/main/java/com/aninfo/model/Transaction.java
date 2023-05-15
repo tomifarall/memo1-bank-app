@@ -11,6 +11,7 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     private Long cbu;
 
     private TransactionType type;
@@ -27,7 +28,7 @@ public class Transaction {
     }
 
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Long cbu) {
@@ -35,7 +36,7 @@ public class Transaction {
     }
 
     public Long getCbu() {
-        return cbu;
+        return this.cbu;
     }
 
     public void setCbu(Long cbu) {
@@ -43,18 +44,18 @@ public class Transaction {
     }
 
     public Double getAmount() {
-        return amount;
+        return this.amount;
     }
 
     public void setAmount(Double amount) {
         this.amount = amount;
     }
 
-    public TransactionType getTransactionType() {
-        return type;
+    public TransactionType getType() {
+        return this.type;
     }
 
-    public void setAmount(TransactionType transactionType) {
+    public void setType(TransactionType transactionType) {
         this.type = transactionType;
     }
 }
