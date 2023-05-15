@@ -1,8 +1,11 @@
 package com.aninfo.service;
 
-import com.aninfo.exceptions.DepositNegativeSumException;
+import com.aninfo.exceptions.AccountNotFoundException;
+import com.aninfo.exceptions.InvalidDepositSumException;
 import com.aninfo.exceptions.InsufficientFundsException;
+import com.aninfo.exceptions.TransactionNotFoundException;
 import com.aninfo.model.Account;
+import com.aninfo.model.Transaction;
 import com.aninfo.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,8 +28,12 @@ public class AccountService {
         return accountRepository.findAll();
     }
 
-    public Optional<Account> findById(Long cbu) {
-        return accountRepository.findById(cbu);
+    public Account findById(Long cbu) {
+        Optional<Account> account = accountRepository.findById(cbu);
+        if (account.isPresent()) {
+            return account.get();
+        }
+        throw new AccountNotFoundException("Account not found.");
     }
 
     public void save(Account account) {
@@ -55,7 +62,7 @@ public class AccountService {
     public Account deposit(Long cbu, Double sum) {
 
         if (sum <= 0) {
-            throw new DepositNegativeSumException("Cannot deposit negative sums");
+            throw new InvalidDepositSumException("Cannot deposit empty or negative sums");
         }
 
         Account account = accountRepository.findAccountByCbu(cbu);

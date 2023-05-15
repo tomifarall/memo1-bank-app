@@ -1,6 +1,6 @@
 package com.aninfo.integration.cucumber;
 
-import com.aninfo.exceptions.DepositNegativeSumException;
+import com.aninfo.exceptions.InvalidDepositSumException;
 import com.aninfo.exceptions.InsufficientFundsException;
 import com.aninfo.model.Account;
 import cucumber.api.java.After;
@@ -17,7 +17,7 @@ public class AccountOperationsTest extends AccountIntegrationServiceTest {
 
     private Account account;
     private InsufficientFundsException ife;
-    private DepositNegativeSumException dnse;
+    private InvalidDepositSumException idse;
 
     @Before
     public void setup() {
@@ -32,7 +32,7 @@ public class AccountOperationsTest extends AccountIntegrationServiceTest {
     @When("^Trying to withdraw (\\d+)$")
     public void trying_to_withdraw(int sum) {
         try {
-            account = withdraw(account, Double.valueOf(sum));
+            withdraw(account, Double.valueOf(sum));
         } catch (InsufficientFundsException ife) {
             this.ife = ife;
         }
@@ -41,15 +41,16 @@ public class AccountOperationsTest extends AccountIntegrationServiceTest {
     @When("^Trying to deposit (.*)$")
     public void trying_to_deposit(int sum) {
         try {
-            account = deposit(account, Double.valueOf(sum));
-        } catch (DepositNegativeSumException dnse) {
-            this.dnse = dnse;
+            deposit(account, Double.valueOf(sum));
+        } catch (InvalidDepositSumException dnse) {
+            this.idse = dnse;
         }
     }
 
     @Then("^Account balance should be (\\d+)$")
     public void account_balance_should_be(int balance) {
-        assertEquals(Double.valueOf(balance), account.getBalance());
+        final Account accountUpdated = accountService.findById(account.getCbu());
+        assertEquals(Double.valueOf(balance), accountUpdated.getBalance());
     }
 
     @Then("^Operation should be denied due to insufficient funds$")
@@ -59,7 +60,7 @@ public class AccountOperationsTest extends AccountIntegrationServiceTest {
 
     @Then("^Operation should be denied due to negative sum$")
     public void operation_should_be_denied_due_to_negative_sum() {
-        assertNotNull(dnse);
+        assertNotNull(idse);
     }
 
     @And("^Account balance should remain (\\d+)$")
